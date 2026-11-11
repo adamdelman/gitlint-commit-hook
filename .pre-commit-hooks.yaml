@@ -1,0 +1,6 @@
+- id: gitlint
+  name: gitlint
+  description: Lint commit messages against https://cbea.ms/git-commit
+  entry: gitlint-commit-hook
+  language: python
+  stages: [commit-msg]

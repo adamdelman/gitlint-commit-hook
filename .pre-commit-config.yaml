@@ -1,0 +1,68 @@
+# prepare-commit-msg runs merge-issue-number; commit-msg runs gitlint
+default_install_hook_types: [pre-commit, prepare-commit-msg, commit-msg]
+default_stages: [pre-commit]
+default_language_version:
+  python: python3.11
+
+repos:
+  - repo: https://github.com/psf/black
+    rev: 25.12.0
+    hooks:
+      - id: black
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8
+        additional_dependencies: [dlint==0.15.0]
+  - repo: https://github.com/pycqa/isort
+    rev: 7.0.0
+    hooks:
+      - id: isort
+        name: isort (python)
+      - id: isort
+        name: isort (cython)
+        types: [cython]
+      - id: isort
+        name: isort (pyi)
+        types: [pyi]
+  - repo: https://github.com/mssalvatore/merge-issue-number-hook
+    rev: v1.0.0
+    hooks:
+      - id: merge-issue-number
+  # Lint this repo's commits with its own working-tree code, not a released tag
+  - repo: local
+    hooks:
+      - id: gitlint
+        name: gitlint
+        entry: poetry run gitlint-commit-hook
+        language: system
+        stages: [commit-msg]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.19.0
+    hooks:
+      - id: mypy
+        additional_dependencies: []
+        exclude: "vulture_allowlist.py"
+        args: [--ignore-missing-imports, --check-untyped-defs]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.9.0
+    hooks:
+    -   id: shellcheck
+  - repo: https://github.com/jendrikseipp/vulture
+    rev: v2.13
+    hooks:
+      - id: vulture
+  - repo: https://github.com/mssalvatore/changelog-formatter-commit-hook
+    rev: v1.0.0
+    hooks:
+      - id: changelog-formatter
